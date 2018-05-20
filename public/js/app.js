@@ -36265,13 +36265,98 @@ module.exports = function normalizeComponent (
 
 /***/ }),
 /* 44 */,
-/* 45 */,
+/* 45 */
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function(useSourceMap) {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
+			if(item[2]) {
+				return "@media " + item[2] + "{" + content + "}";
+			} else {
+				return content;
+			}
+		}).join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap && typeof btoa === 'function') {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
+}
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+	// eslint-disable-next-line no-undef
+	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+	return '/*# ' + data + ' */';
+}
+
+
+/***/ }),
 /* 46 */,
 /* 47 */,
 /* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(71)
+}
 var normalizeComponent = __webpack_require__(40)
 /* script */
 var __vue_script__ = __webpack_require__(49)
@@ -36280,7 +36365,7 @@ var __vue_template__ = __webpack_require__(50)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
-var __vue_styles__ = null
+var __vue_styles__ = injectStyle
 /* scopeId */
 var __vue_scopeId__ = null
 /* moduleIdentifier (server only) */
@@ -36397,7 +36482,7 @@ var render = function() {
       {
         staticClass: "col-md-3",
         staticStyle: {
-          "background-color": "#404040",
+          "background-color": "#194769",
           height: "200vh",
           "text-align": "center",
           color: "white",
@@ -36511,11 +36596,9 @@ var staticRenderFns = [
         attrs: { href: "#" }
       },
       [
-        _c(
-          "li",
-          { staticClass: "nav-item", staticStyle: { color: "#80d4ff" } },
-          [_vm._v("\n\n                        Login\n\n                    ")]
-        )
+        _c("li", { staticClass: "nav-item login" }, [
+          _vm._v("\n\n                        Login\n\n                    ")
+        ])
       ]
     )
   },
@@ -36560,16 +36643,22 @@ if (false) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_Jobs_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__components_Jobs_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Operators_vue__ = __webpack_require__(57);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Operators_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__components_Operators_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_Attendants_vue__ = __webpack_require__(60);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_Attendants_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_Attendants_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_ShowJob_vue__ = __webpack_require__(65);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_ShowJob_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_ShowJob_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_ShowOperator_vue__ = __webpack_require__(75);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_ShowOperator_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_ShowOperator_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Attendants_vue__ = __webpack_require__(60);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Attendants_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_Attendants_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_ShowJob_vue__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_ShowJob_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__components_ShowJob_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_CreateJob_vue__ = __webpack_require__(68);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_CreateJob_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__components_CreateJob_vue__);
 
 
 
 
 
-var routes = [{ path: '/jobs', component: __WEBPACK_IMPORTED_MODULE_0__components_Jobs_vue___default.a }, { path: '/jobs/:id', name: 'ShowJob', component: __WEBPACK_IMPORTED_MODULE_3__components_ShowJob_vue___default.a }, { path: '/operators', component: __WEBPACK_IMPORTED_MODULE_1__components_Operators_vue___default.a }, { path: '/attendants', component: __WEBPACK_IMPORTED_MODULE_2__components_Attendants_vue___default.a }];
+
+
+var routes = [{ path: '/jobs', component: __WEBPACK_IMPORTED_MODULE_0__components_Jobs_vue___default.a }, { path: '/jobs/view/:id', name: 'ShowJob', component: __WEBPACK_IMPORTED_MODULE_4__components_ShowJob_vue___default.a }, { path: '/operators', component: __WEBPACK_IMPORTED_MODULE_1__components_Operators_vue___default.a }, { path: '/operators/view/:id', name: 'ShowOperator', component: __WEBPACK_IMPORTED_MODULE_2__components_ShowOperator_vue___default.a }, { path: '/attendants', component: __WEBPACK_IMPORTED_MODULE_3__components_Attendants_vue___default.a }, { path: '/jobs/create', component: __WEBPACK_IMPORTED_MODULE_5__components_CreateJob_vue___default.a }];
 
 /***/ }),
 /* 52 */
@@ -36684,18 +36773,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
             jobs: [],
-            routes: [],
             operators: [],
             aircrafts: [],
 
             filters: {
-                aircraftId: 0,
-                operatorId: 0
+                aircraftId: '',
+                operatorId: ''
             }
 
         };
@@ -36728,13 +36821,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             console.log(error);
         });
 
-        this.$http.get('http://api.fattendant.local/api/routes').then(function (response) {
-            _this.routes = response.body;
-            console.log(response);
-        }, function (error) {
-            console.log(error);
-        });
-
         this.$http.get('http://api.fattendant.local/api/operators').then(function (response) {
             _this.operators = response.body;
             console.log(response);
@@ -36762,13 +36848,15 @@ var render = function() {
   return _c(
     "div",
     [
+      _vm._m(0),
+      _vm._v(" "),
       _c("div", { staticClass: "row" }, [
         _c("div", { staticClass: "col" }, [
           _c("h2", [_vm._v("Filter Jobs")]),
           _vm._v(" "),
           _c("form", [
             _c("div", { staticClass: "form-group" }, [
-              _vm._m(0),
+              _vm._m(1),
               _vm._v(" "),
               _c(
                 "select",
@@ -36803,7 +36891,7 @@ var render = function() {
                   }
                 },
                 [
-                  _c("option", { attrs: { value: "0" } }, [
+                  _c("option", { attrs: { value: "" } }, [
                     _vm._v("Select Aircraft")
                   ]),
                   _vm._v(" "),
@@ -36818,7 +36906,7 @@ var render = function() {
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "form-group" }, [
-              _vm._m(1),
+              _vm._m(2),
               _vm._v(" "),
               _c(
                 "select",
@@ -36853,7 +36941,7 @@ var render = function() {
                   }
                 },
                 [
-                  _c("option", { attrs: { value: "0" } }, [
+                  _c("option", { attrs: { value: "" } }, [
                     _vm._v("Select Operator")
                   ]),
                   _vm._v(" "),
@@ -36872,7 +36960,7 @@ var render = function() {
             _c(
               "button",
               {
-                staticClass: "btn btn-primary",
+                staticClass: "btn btn-primary app-btn",
                 on: {
                   click: function($event) {
                     $event.preventDefault()
@@ -36886,7 +36974,7 @@ var render = function() {
             _c(
               "button",
               {
-                staticClass: "btn btn-primary",
+                staticClass: "btn btn-primary app-btn",
                 on: {
                   click: function($event) {
                     $event.preventDefault()
@@ -36922,8 +37010,6 @@ var render = function() {
                 1
               ),
               _vm._v(" "),
-              _vm._m(2, true),
-              _vm._v(" "),
               _c("p", [
                 _c("b", [_vm._v("Operator:")]),
                 _vm._v(" " + _vm._s(job.operator.name))
@@ -36934,32 +37020,25 @@ var render = function() {
                 _vm._v(" " + _vm._s(job.aircraft.model))
               ]),
               _vm._v(" "),
-              _vm._l(job.job_routes, function(job_route) {
-                return _c(
-                  "div",
-                  _vm._l(_vm.routes, function(route) {
-                    return route.id == job_route.route_id
-                      ? _c("p", [
-                          _c("b", [_vm._v("Departure:")]),
-                          _vm._v(
-                            " " +
-                              _vm._s(route.departure_date) +
-                              " - " +
-                              _vm._s(route.departure_time)
-                          ),
-                          _c("br"),
-                          _vm._v(" "),
-                          _c("b", [_vm._v("Route:")]),
-                          _vm._v(
-                            " " +
-                              _vm._s(route.departure_airport[0].name) +
-                              " to " +
-                              _vm._s(route.arrival_airport[0].name)
-                          )
-                        ])
-                      : _vm._e()
-                  })
-                )
+              _vm._l(job.routes, function(route) {
+                return _c("div", [
+                  _c("b", [_vm._v("Routing:")]),
+                  _vm._v(
+                    " " +
+                      _vm._s(route.departure_airport[0].name) +
+                      " - " +
+                      _vm._s(route.arrival_airport[0].name) +
+                      "\r\n        \t"
+                  ),
+                  _c("b", [_vm._v("Departure:")]),
+                  _vm._v(
+                    " " +
+                      _vm._s(route.departure_date) +
+                      " - " +
+                      _vm._s(route.departure_time)
+                  ),
+                  _c("br")
+                ])
               }),
               _vm._v(" "),
               _c("p", [
@@ -36972,9 +37051,15 @@ var render = function() {
                 _vm._v(" £" + _vm._s(job.rate))
               ]),
               _vm._v(" "),
-              _c("button", { staticClass: " btn btn-primary" }, [
-                _vm._v("View Job")
-              ]),
+              _c(
+                "router-link",
+                { attrs: { to: { name: "ShowJob", params: { id: job.id } } } },
+                [
+                  _c("button", { staticClass: " btn btn-primary app-btn" }, [
+                    _vm._v("View Job")
+                  ])
+                ]
+              ),
               _vm._v(" "),
               _c("hr")
             ],
@@ -36991,6 +37076,14 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col header-row" }, [_c("h1", [_vm._v("Jobs")])])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
     return _c("label", { staticClass: "control-label" }, [
       _c("b", [_vm._v("Choose Aircraft Model")])
     ])
@@ -37001,15 +37094,6 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("label", { staticClass: "control-label" }, [
       _c("b", [_vm._v("Choose Operator")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("p", [
-      _c("b", [_vm._v("Routing:")]),
-      _vm._v(" Luton (EGGW) to Norwich (EGSH)")
     ])
   }
 ]
@@ -47739,13 +47823,57 @@ module.exports = Component.exports
 
 /***/ }),
 /* 58 */
-/***/ (function(module, exports) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+	data: function data() {
+		return {
+			operators: []
+		};
+	},
+	mounted: function mounted() {
+		var _this = this;
+
+		this.$http.get('http://api.fattendant.local/api/operators').then(function (response) {
+			_this.operators = response.body;
+			console.log(response);
+		}, function (error) {
+			console.log(error);
+		});
+	}
+});
 
 /***/ }),
 /* 59 */
@@ -47755,9 +47883,111 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [_vm._v("\n\tOperators page\n")])
+  return _c(
+    "div",
+    [
+      _vm._m(0),
+      _vm._v(" "),
+      _vm._l(_vm.operators, function(operator) {
+        return _c(
+          "div",
+          { staticClass: "row", staticStyle: { "margin-top": "20px" } },
+          [
+            _c("div", { staticClass: "col-12" }, [
+              _c(
+                "h1",
+                { staticStyle: { color: "#194769" } },
+                [
+                  _c(
+                    "router-link",
+                    {
+                      attrs: {
+                        to: {
+                          name: "ShowOperator",
+                          params: { id: operator.id }
+                        }
+                      }
+                    },
+                    [_c("b", [_vm._v(_vm._s(operator.name))])]
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c("p", [
+                _c("b", [_vm._v("Address")]),
+                _vm._v(" " + _vm._s(operator.address))
+              ])
+            ]),
+            _vm._v(" "),
+            operator.aircrafts.length > 0
+              ? _c(
+                  "div",
+                  { staticClass: "col-12" },
+                  [
+                    _c("h3", [_vm._v(_vm._s(operator.name) + "'s Fleet:")]),
+                    _vm._v(" "),
+                    _vm._l(operator.aircrafts, function(aircraft) {
+                      return _c("div", [
+                        _c("p", [
+                          _c("b", [_vm._v("Model:")]),
+                          _vm._v(" " + _vm._s(aircraft.model))
+                        ]),
+                        _vm._v(" "),
+                        _c("p", [
+                          _c("b", [_vm._v("Year of Manufacture:")]),
+                          _vm._v(" " + _vm._s(aircraft.yom))
+                        ]),
+                        _vm._v(" "),
+                        _c("hr")
+                      ])
+                    })
+                  ],
+                  2
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "col" },
+              [
+                _c(
+                  "router-link",
+                  {
+                    attrs: {
+                      to: { name: "ShowOperator", params: { id: operator.id } }
+                    }
+                  },
+                  [
+                    _c("button", { staticClass: "btn btn-primary app-btn" }, [
+                      _vm._v("View Operator")
+                    ])
+                  ]
+                ),
+                _vm._v(" "),
+                _c("br")
+              ],
+              1
+            )
+          ]
+        )
+      })
+    ],
+    2
+  )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col header-row" }, [
+        _c("h1", [_vm._v("Operators")])
+      ])
+    ])
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -49484,13 +49714,48 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 	data: function data() {
 
 		return {
 
-			job: {}
+			job: {
+				operator: {},
+				aircraft: {},
+				routes: [],
+				applicants: []
+
+			}
 
 		};
 	},
@@ -49513,18 +49778,1296 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "row" }, [
-    _c("div", { staticClass: "col" }, [
-      _c("h1", [_vm._v("Job id: " + _vm._s(_vm.job.id))]),
-      _vm._v(" "),
-      _c("h3", [_vm._v("Route ")]),
-      _vm._v(" "),
-      _c("h3", [_vm._v("Aircraft Model:")]),
-      _vm._v(" "),
-      _c("h3", [_vm._v("Rate:")]),
-      _vm._v(" "),
-      _c("button", { staticClass: "btn btn-primary" }, [_vm._v("Apply")])
+  return _c("div", [
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col header-row" }, [
+        _c("h1", [_vm._v("Job id: " + _vm._s(_vm.job.id))])
+      ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "row" }, [
+      _c(
+        "div",
+        { staticClass: "col" },
+        [
+          _c("p", [
+            _c("b", [_vm._v("Operator:")]),
+            _vm._v(" " + _vm._s(_vm.job.operator.name))
+          ]),
+          _vm._v(" "),
+          _c("p", [
+            _c("b", [_vm._v("Aircraft Model:")]),
+            _vm._v(" " + _vm._s(_vm.job.aircraft.model))
+          ]),
+          _vm._v(" "),
+          _vm._l(_vm.job.routes, function(route) {
+            return _c("div", [
+              _c("b", [_vm._v("Routing:")]),
+              _vm._v(
+                " " +
+                  _vm._s(route.departure_airport[0].name) +
+                  " - " +
+                  _vm._s(route.arrival_airport[0].name) +
+                  "\r\n        \t\t"
+              ),
+              _c("b", [_vm._v("Departure:")]),
+              _vm._v(
+                " " +
+                  _vm._s(route.departure_date) +
+                  " - " +
+                  _vm._s(route.departure_time)
+              ),
+              _c("br")
+            ])
+          }),
+          _vm._v(" "),
+          _c("p", [
+            _c("b", [_vm._v("Rate:")]),
+            _vm._v(" £" + _vm._s(_vm.job.rate))
+          ]),
+          _vm._v(" "),
+          _c("button", { staticClass: "btn btn-primary app-btn" }, [
+            _vm._v("Apply")
+          ]),
+          _vm._v(" "),
+          _c("hr")
+        ],
+        2
+      )
+    ]),
+    _vm._v(" "),
+    _vm._m(0),
+    _vm._v(" "),
+    _c("div", { staticClass: "row" }, [
+      _c(
+        "div",
+        { staticClass: "col" },
+        _vm._l(_vm.job.applicants, function(applicant) {
+          return _c("div", [
+            _c("p", [
+              _c("b", [_vm._v("Name: ")]),
+              _vm._v(_vm._s(applicant.name))
+            ]),
+            _vm._v(" "),
+            _c("p", [
+              _c("b", [_vm._v("Email: ")]),
+              _vm._v(_vm._s(applicant.email))
+            ]),
+            _vm._v(" "),
+            _c("button", { staticClass: "btn btn-primary app-btn" }, [
+              _vm._v("View Applicant")
+            ]),
+            _vm._v(" "),
+            _c("hr")
+          ])
+        })
+      )
     ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col" }, [_c("h2", [_vm._v("Applicants")])])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-4c73db4e", module.exports)
+  }
+}
+
+/***/ }),
+/* 68 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(40)
+/* script */
+var __vue_script__ = __webpack_require__(69)
+/* template */
+var __vue_template__ = __webpack_require__(70)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources\\assets\\js\\components\\CreateJob.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-5ad3598c", Component.options)
+  } else {
+    hotAPI.reload("data-v-5ad3598c", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 69 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+	data: function data() {
+		return {
+			operators: [],
+			aircrafts: [],
+			airports: [],
+
+			job: {
+				operatorId: '',
+				aircraftId: '',
+				rate: '',
+				startDate: '',
+				closeDate: '',
+
+				routes: [{ departure_date: '',
+					departure_time: '',
+					departure_airport_id: '',
+					arrival_airport_id: ''
+				}]
+			}
+		};
+	},
+	mounted: function mounted() {
+		var _this = this;
+
+		this.$http.get('http://api.fattendant.local/api/operators').then(function (response) {
+			_this.operators = response.body;
+			console.log(response);
+		}, function (error) {
+			console.log(error);
+		});
+
+		this.$http.get('http://api.fattendant.local/api/aircrafts').then(function (response) {
+			_this.aircrafts = response.body;
+			console.log(response);
+		}, function (error) {
+			console.log(error);
+		});
+
+		this.$http.get('http://api.fattendant.local/api/airports').then(function (response) {
+			_this.airports = response.body;
+			console.log(response);
+		}, function (error) {
+			console.log(error);
+		});
+	},
+
+
+	methods: {
+		addRoute: function addRoute() {
+			this.job.routes.push({
+				departure_date: '',
+				departure_time: '',
+				departure_airport_id: '',
+				arrival_airport_id: ''
+			});
+		},
+		deleteRoute: function deleteRoute(index) {
+			this.job.routes.splice(index, 1);
+		}
+	}
+});
+
+/***/ }),
+/* 70 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("div", { staticClass: "row" }, [
+      _c(
+        "div",
+        { staticClass: "col" },
+        [
+          _c("div", { staticClass: "form-group" }, [
+            _vm._m(1),
+            _vm._v(" "),
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.job.operatorId,
+                    expression: "job.operatorId"
+                  }
+                ],
+                staticClass: "form-control",
+                on: {
+                  change: function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.$set(
+                      _vm.job,
+                      "operatorId",
+                      $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                    )
+                  }
+                }
+              },
+              [
+                _c("option", { attrs: { value: "" } }, [
+                  _vm._v("Select Operator")
+                ]),
+                _vm._v(" "),
+                _vm._l(_vm.operators, function(operator) {
+                  return _c("option", { domProps: { value: operator.id } }, [
+                    _vm._v(_vm._s(operator.name))
+                  ])
+                })
+              ],
+              2
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-group" }, [
+            _vm._m(2),
+            _vm._v(" "),
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.job.aircraftId,
+                    expression: "job.aircraftId"
+                  }
+                ],
+                staticClass: "form-control",
+                on: {
+                  change: function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.$set(
+                      _vm.job,
+                      "aircraftId",
+                      $event.target.multiple ? $$selectedVal : $$selectedVal[0]
+                    )
+                  }
+                }
+              },
+              [
+                _c("option", { attrs: { value: "" } }, [
+                  _vm._v("Select Aircraft")
+                ]),
+                _vm._v(" "),
+                _vm._l(_vm.aircrafts, function(aircraft) {
+                  return _c("option", { domProps: { value: aircraft.id } }, [
+                    _vm._v(_vm._s(aircraft.model))
+                  ])
+                })
+              ],
+              2
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-group" }, [
+            _vm._m(3),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.job.rate,
+                  expression: "job.rate"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: { type: "text" },
+              domProps: { value: _vm.job.rate },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.job, "rate", $event.target.value)
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-group" }, [
+            _vm._m(4),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.job.startDate,
+                  expression: "job.startDate"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: { type: "date" },
+              domProps: { value: _vm.job.startDate },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.job, "startDate", $event.target.value)
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-group" }, [
+            _vm._m(5),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.job.closeDate,
+                  expression: "job.closeDate"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: { type: "date" },
+              domProps: { value: _vm.job.closeDate },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.job, "closeDate", $event.target.value)
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("h2", [_vm._v("Routes")]),
+          _vm._v(" "),
+          _vm._l(_vm.job.routes, function(route, index) {
+            return _c("div", [
+              _c("h3", [_vm._v("Leg " + _vm._s(index + 1))]),
+              _vm._v(" "),
+              _c("div", { staticClass: "form-group" }, [
+                _vm._m(6, true),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: route.departure_date,
+                      expression: "route.departure_date"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: { type: "date" },
+                  domProps: { value: route.departure_date },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(route, "departure_date", $event.target.value)
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "form-group" }, [
+                _vm._m(7, true),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: route.departure_time,
+                      expression: "route.departure_time"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: { type: "time" },
+                  domProps: { value: route.departure_time },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(route, "departure_time", $event.target.value)
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "form-group" }, [
+                _vm._m(8, true),
+                _vm._v(" "),
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: route.departure_airport_id,
+                        expression: "route.departure_airport_id"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    on: {
+                      change: function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.$set(
+                          route,
+                          "departure_airport_id",
+                          $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        )
+                      }
+                    }
+                  },
+                  [
+                    _c("option", { attrs: { value: "" } }, [
+                      _vm._v("Select Airport")
+                    ]),
+                    _vm._v(" "),
+                    _vm._l(_vm.airports, function(airport) {
+                      return _c("option", { domProps: { value: airport.id } }, [
+                        _vm._v(
+                          _vm._s(airport.name) +
+                            " (" +
+                            _vm._s(airport.code) +
+                            ")"
+                        )
+                      ])
+                    })
+                  ],
+                  2
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "form-group" }, [
+                _vm._m(9, true),
+                _vm._v(" "),
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: route.arrival_airport_id,
+                        expression: "route.arrival_airport_id"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    on: {
+                      change: function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.$set(
+                          route,
+                          "arrival_airport_id",
+                          $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        )
+                      }
+                    }
+                  },
+                  [
+                    _c("option", { attrs: { value: "" } }, [
+                      _vm._v("Select Airport")
+                    ]),
+                    _vm._v(" "),
+                    _vm._l(_vm.airports, function(airport) {
+                      return _c("option", { domProps: { value: airport.id } }, [
+                        _vm._v(
+                          _vm._s(airport.name) +
+                            " (" +
+                            _vm._s(airport.code) +
+                            ")"
+                        )
+                      ])
+                    })
+                  ],
+                  2
+                )
+              ]),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-danger",
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      _vm.deleteRoute(index)
+                    }
+                  }
+                },
+                [_vm._v("Delete This Leg")]
+              ),
+              _vm._v(" "),
+              _c("hr")
+            ])
+          })
+        ],
+        2
+      )
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col" }, [
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-success",
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                return _vm.addRoute($event)
+              }
+            }
+          },
+          [_vm._v("Add Another Leg")]
+        )
+      ])
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col header-row" }, [
+        _c("h1", [_vm._v("Create a New Job")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", { staticClass: "control-label" }, [
+      _c("b", [_vm._v("Operator")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", { staticClass: "control-label" }, [
+      _c("b", [_vm._v("Aircraft")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", { staticClass: "control-label" }, [
+      _c("b", [_vm._v("Rate")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", { staticClass: "control-label" }, [
+      _c("b", [_vm._v("Start Date")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", { staticClass: "control-label" }, [
+      _c("b", [_vm._v("Close Date")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", { staticClass: "control-label" }, [
+      _c("b", [_vm._v("Departure Date")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", { staticClass: "control-label" }, [
+      _c("b", [_vm._v("Departure Time")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", { staticClass: "control-label" }, [
+      _c("b", [_vm._v("Departure Airport")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("label", { staticClass: "control-label" }, [
+      _c("b", [_vm._v("Arrival Airport")])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-5ad3598c", module.exports)
+  }
+}
+
+/***/ }),
+/* 71 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(72);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(73)("02b3e434", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-6dd1125c\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./App.vue", function() {
+     var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-6dd1125c\",\"scoped\":false,\"hasInlineConfig\":true}!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./App.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 72 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(45)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.header-row{\r\n    background-color: #F2855E;\r\n    color:white;\n}\n.header-row h1{\r\n    font-weight: bold;\n}\nh2, h2 a, h1 a{\r\n    color: #194769;\r\n    font-weight:bold;\n}\n.app-btn{\r\n    background-color: #F2855E;\r\n    border-color: #F2855E;\r\n    font-weight: bold;\n}\n.app-btn:hover{\r\n    background-color: #194769;\r\n    border-color: #194769;\n}\n.nav a:hover{\r\n    background-color: #F2855E;\r\n    text-decoration: none;\n}\n.nav a:hover > .nav-item.login{\r\n    color:white;\n}\n.nav-item {\r\n    color:white;\n}\n.nav-item.login{\r\n    color:#F2855E;\n}\r\n\r\n\r\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 73 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*
+  MIT License http://www.opensource.org/licenses/mit-license.php
+  Author Tobias Koppers @sokra
+  Modified by Evan You @yyx990803
+*/
+
+var hasDocument = typeof document !== 'undefined'
+
+if (typeof DEBUG !== 'undefined' && DEBUG) {
+  if (!hasDocument) {
+    throw new Error(
+    'vue-style-loader cannot be used in a non-browser environment. ' +
+    "Use { target: 'node' } in your Webpack config to indicate a server-rendering environment."
+  ) }
+}
+
+var listToStyles = __webpack_require__(74)
+
+/*
+type StyleObject = {
+  id: number;
+  parts: Array<StyleObjectPart>
+}
+
+type StyleObjectPart = {
+  css: string;
+  media: string;
+  sourceMap: ?string
+}
+*/
+
+var stylesInDom = {/*
+  [id: number]: {
+    id: number,
+    refs: number,
+    parts: Array<(obj?: StyleObjectPart) => void>
+  }
+*/}
+
+var head = hasDocument && (document.head || document.getElementsByTagName('head')[0])
+var singletonElement = null
+var singletonCounter = 0
+var isProduction = false
+var noop = function () {}
+var options = null
+var ssrIdKey = 'data-vue-ssr-id'
+
+// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+// tags it will allow on a page
+var isOldIE = typeof navigator !== 'undefined' && /msie [6-9]\b/.test(navigator.userAgent.toLowerCase())
+
+module.exports = function (parentId, list, _isProduction, _options) {
+  isProduction = _isProduction
+
+  options = _options || {}
+
+  var styles = listToStyles(parentId, list)
+  addStylesToDom(styles)
+
+  return function update (newList) {
+    var mayRemove = []
+    for (var i = 0; i < styles.length; i++) {
+      var item = styles[i]
+      var domStyle = stylesInDom[item.id]
+      domStyle.refs--
+      mayRemove.push(domStyle)
+    }
+    if (newList) {
+      styles = listToStyles(parentId, newList)
+      addStylesToDom(styles)
+    } else {
+      styles = []
+    }
+    for (var i = 0; i < mayRemove.length; i++) {
+      var domStyle = mayRemove[i]
+      if (domStyle.refs === 0) {
+        for (var j = 0; j < domStyle.parts.length; j++) {
+          domStyle.parts[j]()
+        }
+        delete stylesInDom[domStyle.id]
+      }
+    }
+  }
+}
+
+function addStylesToDom (styles /* Array<StyleObject> */) {
+  for (var i = 0; i < styles.length; i++) {
+    var item = styles[i]
+    var domStyle = stylesInDom[item.id]
+    if (domStyle) {
+      domStyle.refs++
+      for (var j = 0; j < domStyle.parts.length; j++) {
+        domStyle.parts[j](item.parts[j])
+      }
+      for (; j < item.parts.length; j++) {
+        domStyle.parts.push(addStyle(item.parts[j]))
+      }
+      if (domStyle.parts.length > item.parts.length) {
+        domStyle.parts.length = item.parts.length
+      }
+    } else {
+      var parts = []
+      for (var j = 0; j < item.parts.length; j++) {
+        parts.push(addStyle(item.parts[j]))
+      }
+      stylesInDom[item.id] = { id: item.id, refs: 1, parts: parts }
+    }
+  }
+}
+
+function createStyleElement () {
+  var styleElement = document.createElement('style')
+  styleElement.type = 'text/css'
+  head.appendChild(styleElement)
+  return styleElement
+}
+
+function addStyle (obj /* StyleObjectPart */) {
+  var update, remove
+  var styleElement = document.querySelector('style[' + ssrIdKey + '~="' + obj.id + '"]')
+
+  if (styleElement) {
+    if (isProduction) {
+      // has SSR styles and in production mode.
+      // simply do nothing.
+      return noop
+    } else {
+      // has SSR styles but in dev mode.
+      // for some reason Chrome can't handle source map in server-rendered
+      // style tags - source maps in <style> only works if the style tag is
+      // created and inserted dynamically. So we remove the server rendered
+      // styles and inject new ones.
+      styleElement.parentNode.removeChild(styleElement)
+    }
+  }
+
+  if (isOldIE) {
+    // use singleton mode for IE9.
+    var styleIndex = singletonCounter++
+    styleElement = singletonElement || (singletonElement = createStyleElement())
+    update = applyToSingletonTag.bind(null, styleElement, styleIndex, false)
+    remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true)
+  } else {
+    // use multi-style-tag mode in all other cases
+    styleElement = createStyleElement()
+    update = applyToTag.bind(null, styleElement)
+    remove = function () {
+      styleElement.parentNode.removeChild(styleElement)
+    }
+  }
+
+  update(obj)
+
+  return function updateStyle (newObj /* StyleObjectPart */) {
+    if (newObj) {
+      if (newObj.css === obj.css &&
+          newObj.media === obj.media &&
+          newObj.sourceMap === obj.sourceMap) {
+        return
+      }
+      update(obj = newObj)
+    } else {
+      remove()
+    }
+  }
+}
+
+var replaceText = (function () {
+  var textStore = []
+
+  return function (index, replacement) {
+    textStore[index] = replacement
+    return textStore.filter(Boolean).join('\n')
+  }
+})()
+
+function applyToSingletonTag (styleElement, index, remove, obj) {
+  var css = remove ? '' : obj.css
+
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = replaceText(index, css)
+  } else {
+    var cssNode = document.createTextNode(css)
+    var childNodes = styleElement.childNodes
+    if (childNodes[index]) styleElement.removeChild(childNodes[index])
+    if (childNodes.length) {
+      styleElement.insertBefore(cssNode, childNodes[index])
+    } else {
+      styleElement.appendChild(cssNode)
+    }
+  }
+}
+
+function applyToTag (styleElement, obj) {
+  var css = obj.css
+  var media = obj.media
+  var sourceMap = obj.sourceMap
+
+  if (media) {
+    styleElement.setAttribute('media', media)
+  }
+  if (options.ssrId) {
+    styleElement.setAttribute(ssrIdKey, obj.id)
+  }
+
+  if (sourceMap) {
+    // https://developer.chrome.com/devtools/docs/javascript-debugging
+    // this makes source maps inside style tags work properly in Chrome
+    css += '\n/*# sourceURL=' + sourceMap.sources[0] + ' */'
+    // http://stackoverflow.com/a/26603875
+    css += '\n/*# sourceMappingURL=data:application/json;base64,' + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + ' */'
+  }
+
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = css
+  } else {
+    while (styleElement.firstChild) {
+      styleElement.removeChild(styleElement.firstChild)
+    }
+    styleElement.appendChild(document.createTextNode(css))
+  }
+}
+
+
+/***/ }),
+/* 74 */
+/***/ (function(module, exports) {
+
+/**
+ * Translates the list format produced by css-loader into something
+ * easier to manipulate.
+ */
+module.exports = function listToStyles (parentId, list) {
+  var styles = []
+  var newStyles = {}
+  for (var i = 0; i < list.length; i++) {
+    var item = list[i]
+    var id = item[0]
+    var css = item[1]
+    var media = item[2]
+    var sourceMap = item[3]
+    var part = {
+      id: parentId + ':' + i,
+      css: css,
+      media: media,
+      sourceMap: sourceMap
+    }
+    if (!newStyles[id]) {
+      styles.push(newStyles[id] = { id: id, parts: [part] })
+    } else {
+      newStyles[id].parts.push(part)
+    }
+  }
+  return styles
+}
+
+
+/***/ }),
+/* 75 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(40)
+/* script */
+var __vue_script__ = __webpack_require__(76)
+/* template */
+var __vue_template__ = __webpack_require__(77)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources\\assets\\js\\components\\ShowOperator.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-0eec1d90", Component.options)
+  } else {
+    hotAPI.reload("data-v-0eec1d90", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 76 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+	data: function data() {
+		return {
+			operator: {}
+		};
+	},
+	mounted: function mounted() {
+		var _this = this;
+
+		this.$http.get('http://api.fattendant.local/api/operators/' + this.$route.params.id).then(function (response) {
+
+			_this.operator = response.body;
+			console.log(response);
+		});
+	}
+});
+
+/***/ }),
+/* 77 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col header-row" }, [
+        _c("h1", [_vm._v(_vm._s(_vm.operator.name))])
+      ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col" }, [
+        _c("h2", [_vm._v(_vm._s(_vm.operator.address))]),
+        _vm._v(" "),
+        _c("hr")
+      ])
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "row" },
+      [
+        _c("div", { staticClass: "col-12" }, [
+          _c("h2", [_vm._v(_vm._s(_vm.operator.name) + "'s Jobs")])
+        ]),
+        _vm._v(" "),
+        _vm._l(_vm.operator.jobs, function(job) {
+          return _c("div", { staticClass: "col-12" }, [
+            _c("h3", [
+              _c("b", [_vm._v("Job id:")]),
+              _vm._v(" " + _vm._s(job.id))
+            ]),
+            _vm._v(" "),
+            _c("hr")
+          ])
+        })
+      ],
+      2
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "row" },
+      [
+        _c("div", { staticClass: "col-12" }, [
+          _c("h2", [_vm._v(_vm._s(_vm.operator.name) + "'s Fleet")])
+        ]),
+        _vm._v(" "),
+        _vm._l(_vm.operator.aircrafts, function(aircraft) {
+          return _c(
+            "div",
+            { staticClass: "col-12" },
+            [
+              _c("h3", [
+                _c("b", [_vm._v("Model:")]),
+                _vm._v(" " + _vm._s(aircraft.model))
+              ]),
+              _vm._v(" "),
+              _c("p", [
+                _c("b", [_vm._v("Registration:")]),
+                _vm._v(" " + _vm._s(aircraft.registration))
+              ]),
+              _vm._v(" "),
+              _c("P", [
+                _c("b", [_vm._v("Year of Manufacture:")]),
+                _vm._v(" " + _vm._s(aircraft.yom))
+              ])
+            ],
+            1
+          )
+        })
+      ],
+      2
+    )
   ])
 }
 var staticRenderFns = []
@@ -49533,7 +51076,7 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-4c73db4e", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-0eec1d90", module.exports)
   }
 }
 
