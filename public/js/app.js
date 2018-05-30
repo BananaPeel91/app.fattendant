@@ -36647,10 +36647,12 @@ if (false) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_ShowOperator_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_ShowOperator_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Attendants_vue__ = __webpack_require__(60);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Attendants_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_Attendants_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_ShowJob_vue__ = __webpack_require__(65);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_ShowJob_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__components_ShowJob_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_CreateJob_vue__ = __webpack_require__(68);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_CreateJob_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__components_CreateJob_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_ShowAttendant_vue__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_ShowAttendant_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__components_ShowAttendant_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_ShowJob_vue__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_ShowJob_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__components_ShowJob_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_CreateJob_vue__ = __webpack_require__(68);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_CreateJob_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__components_CreateJob_vue__);
 
 
 
@@ -36658,7 +36660,8 @@ if (false) {
 
 
 
-var routes = [{ path: '/jobs', component: __WEBPACK_IMPORTED_MODULE_0__components_Jobs_vue___default.a }, { path: '/jobs/view/:id', name: 'ShowJob', component: __WEBPACK_IMPORTED_MODULE_4__components_ShowJob_vue___default.a }, { path: '/operators', component: __WEBPACK_IMPORTED_MODULE_1__components_Operators_vue___default.a }, { path: '/operators/view/:id', name: 'ShowOperator', component: __WEBPACK_IMPORTED_MODULE_2__components_ShowOperator_vue___default.a }, { path: '/attendants', component: __WEBPACK_IMPORTED_MODULE_3__components_Attendants_vue___default.a }, { path: '/jobs/create', component: __WEBPACK_IMPORTED_MODULE_5__components_CreateJob_vue___default.a }];
+
+var routes = [{ path: '/jobs', component: __WEBPACK_IMPORTED_MODULE_0__components_Jobs_vue___default.a }, { path: '/jobs/view/:id', name: 'ShowJob', component: __WEBPACK_IMPORTED_MODULE_5__components_ShowJob_vue___default.a }, { path: '/operators', component: __WEBPACK_IMPORTED_MODULE_1__components_Operators_vue___default.a }, { path: '/operators/view/:id', name: 'ShowOperator', component: __WEBPACK_IMPORTED_MODULE_2__components_ShowOperator_vue___default.a }, { path: '/attendants', component: __WEBPACK_IMPORTED_MODULE_3__components_Attendants_vue___default.a }, { path: '/attendants/view/:id', name: 'ShowAttendant', component: __WEBPACK_IMPORTED_MODULE_4__components_ShowAttendant_vue___default.a }, { path: '/jobs/create', component: __WEBPACK_IMPORTED_MODULE_6__components_CreateJob_vue___default.a }];
 
 /***/ }),
 /* 52 */
@@ -48002,17 +48005,21 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(79)
+}
 var normalizeComponent = __webpack_require__(40)
 /* script */
 var __vue_script__ = __webpack_require__(61)
 /* template */
-var __vue_template__ = __webpack_require__(62)
+var __vue_template__ = __webpack_require__(81)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
-var __vue_styles__ = null
+var __vue_styles__ = injectStyle
 /* scopeId */
-var __vue_scopeId__ = null
+var __vue_scopeId__ = "data-v-55349cbd"
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
@@ -48046,35 +48053,73 @@ module.exports = Component.exports
 
 /***/ }),
 /* 61 */
-/***/ (function(module, exports) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+	data: function data() {
+		return {
+
+			attendants: [],
+			selectedAircraft: ''
+		};
+	},
+	mounted: function mounted() {
+		var _this = this;
+
+		this.$http.get('http://api.fattendant.local/api/attendants').then(function (response) {
+			_this.attendants = response.body;
+			console.log(response);
+		}, function (error) {
+			console.log(error);
+		});
+	},
+
+
+	methods: {
+		showAircraft: function showAircraft(attendantId) {
+			if (this.selectedAircraft == attendantId) {
+				this.selectedAircraft = '';
+			} else {
+				this.selectedAircraft = attendantId;
+			}
+		}
+	}
+});
 
 /***/ }),
-/* 62 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", [_vm._v("\n\tAttendants page\n")])
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-55349cbd", module.exports)
-  }
-}
-
-/***/ }),
+/* 62 */,
 /* 63 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -50025,6 +50070,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 	data: function data() {
@@ -50034,17 +50082,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 			airports: [],
 
 			job: {
-				operatorId: '',
-				aircraftId: '',
+				operator_id: '',
+				aircraft_id: '',
 				rate: '',
-				startDate: '',
-				closeDate: '',
+				start_date: '',
+				close_date: '',
 
 				routes: [{ departure_date: '',
 					departure_time: '',
 					departure_airport_id: '',
 					arrival_airport_id: ''
 				}]
+			},
+
+			newJob: {
+				id: ''
 			}
 		};
 	},
@@ -50075,6 +50127,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 	methods: {
+		createJob: function createJob() {
+			var _this2 = this;
+
+			this.$http.post('http://api.fattendant.local/api/jobs/create', this.job).then(function (response) {
+				_this2.newJob.id = response.body;
+				alert('job added');
+				console.log(response);
+				_this2.$router.push({ name: 'ShowJob', params: { id: _this2.newJob.id } });
+			}, function (error) {
+				console.log(error);
+			});
+		},
 		addRoute: function addRoute() {
 			this.job.routes.push({
 				departure_date: '',
@@ -50115,8 +50179,8 @@ var render = function() {
                   {
                     name: "model",
                     rawName: "v-model",
-                    value: _vm.job.operatorId,
-                    expression: "job.operatorId"
+                    value: _vm.job.operator_id,
+                    expression: "job.operator_id"
                   }
                 ],
                 staticClass: "form-control",
@@ -50132,7 +50196,7 @@ var render = function() {
                       })
                     _vm.$set(
                       _vm.job,
-                      "operatorId",
+                      "operator_id",
                       $event.target.multiple ? $$selectedVal : $$selectedVal[0]
                     )
                   }
@@ -50163,8 +50227,8 @@ var render = function() {
                   {
                     name: "model",
                     rawName: "v-model",
-                    value: _vm.job.aircraftId,
-                    expression: "job.aircraftId"
+                    value: _vm.job.aircraft_id,
+                    expression: "job.aircraft_id"
                   }
                 ],
                 staticClass: "form-control",
@@ -50180,7 +50244,7 @@ var render = function() {
                       })
                     _vm.$set(
                       _vm.job,
-                      "aircraftId",
+                      "aircraft_id",
                       $event.target.multiple ? $$selectedVal : $$selectedVal[0]
                     )
                   }
@@ -50235,19 +50299,19 @@ var render = function() {
                 {
                   name: "model",
                   rawName: "v-model",
-                  value: _vm.job.startDate,
-                  expression: "job.startDate"
+                  value: _vm.job.start_date,
+                  expression: "job.start_date"
                 }
               ],
               staticClass: "form-control",
               attrs: { type: "date" },
-              domProps: { value: _vm.job.startDate },
+              domProps: { value: _vm.job.start_date },
               on: {
                 input: function($event) {
                   if ($event.target.composing) {
                     return
                   }
-                  _vm.$set(_vm.job, "startDate", $event.target.value)
+                  _vm.$set(_vm.job, "start_date", $event.target.value)
                 }
               }
             })
@@ -50261,19 +50325,19 @@ var render = function() {
                 {
                   name: "model",
                   rawName: "v-model",
-                  value: _vm.job.closeDate,
-                  expression: "job.closeDate"
+                  value: _vm.job.close_date,
+                  expression: "job.close_date"
                 }
               ],
               staticClass: "form-control",
               attrs: { type: "date" },
-              domProps: { value: _vm.job.closeDate },
+              domProps: { value: _vm.job.close_date },
               on: {
                 input: function($event) {
                   if ($event.target.composing) {
                     return
                   }
-                  _vm.$set(_vm.job, "closeDate", $event.target.value)
+                  _vm.$set(_vm.job, "close_date", $event.target.value)
                 }
               }
             })
@@ -50483,6 +50547,22 @@ var render = function() {
             }
           },
           [_vm._v("Add Another Leg")]
+        ),
+        _vm._v(" "),
+        _c("hr"),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-primary app-btn",
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                return _vm.createJob($event)
+              }
+            }
+          },
+          [_vm._v("Submit")]
         )
       ])
     ])
@@ -51077,6 +51157,180 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-0eec1d90", module.exports)
+  }
+}
+
+/***/ }),
+/* 78 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var normalizeComponent = __webpack_require__(40)
+/* script */
+var __vue_script__ = null
+/* template */
+var __vue_template__ = null
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources\\assets\\js\\components\\ShowAttendant.vue"
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 79 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(80);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(73)("999b106a", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-55349cbd\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Attendants.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-55349cbd\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Attendants.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 80 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(45)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.hidden[data-v-55349cbd]{\n\tvisibility:hidden;\n\theight: 0px;\n}\n.show[data-v-55349cbd]{\n\tvisibility:visible;\n\theight: 200px;\n}\nh4[data-v-55349cbd]:hover{\n\tcursor:pointer;\n\ttext-decoration: underline;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 81 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _vm._m(0),
+      _vm._v(" "),
+      _vm._l(_vm.attendants, function(attendant) {
+        return _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col" }, [
+            _c(
+              "h2",
+              [
+                _c(
+                  "router-link",
+                  {
+                    attrs: {
+                      to: {
+                        name: "ShowAttendant",
+                        params: { id: attendant.id }
+                      }
+                    }
+                  },
+                  [_c("b", [_vm._v(_vm._s(attendant.name))])]
+                )
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c("p", [
+              _c("b", [_vm._v("Email:")]),
+              _vm._v(_vm._s(attendant.email))
+            ]),
+            _vm._v(" "),
+            _c(
+              "h4",
+              {
+                on: {
+                  click: function($event) {
+                    _vm.showAircraft(attendant.id)
+                  }
+                }
+              },
+              [
+                _vm._v(
+                  _vm._s(
+                    _vm.selectedAircraft == attendant.id ? "Hide" : "Show"
+                  ) +
+                    " " +
+                    _vm._s(attendant.name) +
+                    "'s aircraft experience:"
+                )
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              _vm._l(attendant.aircrafts, function(aircraft) {
+                return _vm.selectedAircraft == attendant.id
+                  ? _c("div", { staticClass: "col" }, [
+                      _c("p", [
+                        _c("b", [_vm._v("Model :")]),
+                        _vm._v(_vm._s(aircraft.model))
+                      ])
+                    ])
+                  : _vm._e()
+              })
+            ),
+            _vm._v(" "),
+            _c("hr")
+          ])
+        ])
+      })
+    ],
+    2
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col header-row" }, [
+        _c("h1", [_vm._v("Attendants")])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-55349cbd", module.exports)
   }
 }
 

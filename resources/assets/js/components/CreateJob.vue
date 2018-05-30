@@ -11,7 +11,7 @@
 				
 					<div class="form-group">
 						<label class="control-label"><b>Operator</b> </label>
-						<select v-model="job.operatorId" class="form-control">
+						<select v-model="job.operator_id" class="form-control">
 						<option value="">Select Operator</option>
 						<option v-for="operator in operators" :value="operator.id">{{ operator.name }}</option>
 						</select>
@@ -19,7 +19,7 @@
 
 					<div class="form-group">
 						<label class="control-label"><b>Aircraft</b> </label>
-						<select v-model="job.aircraftId" class="form-control">
+						<select v-model="job.aircraft_id" class="form-control">
 						<option value="">Select Aircraft</option>
 						<option v-for="aircraft in aircrafts" :value="aircraft.id">{{ aircraft.model }}</option>
 						</select>
@@ -32,12 +32,12 @@
 
 					<div class="form-group">
 						<label class="control-label"><b>Start Date</b></label>
-						<input v-model="job.startDate" type="date" class="form-control">
+						<input v-model="job.start_date" type="date" class="form-control">
 					</div>
 
 					<div class="form-group">
 						<label class="control-label"><b>Close Date</b></label>
-						<input v-model="job.closeDate" type="date" class="form-control">
+						<input v-model="job.close_date" type="date" class="form-control">
 					</div>
 
 					<h2>Routes</h2>
@@ -81,9 +81,12 @@
 	<div class="row">
 		<div class="col">
 					<button class="btn btn-success" @click.prevent="addRoute">Add Another Leg</button>
+					<hr>
+					<button class="btn btn-primary app-btn" @click.prevent="createJob">Submit</button>
 
 		</div>
 	</div>
+
 </div>
 </template>
 <script>
@@ -98,11 +101,11 @@
 
 				
 				job:{
-					operatorId: '',
-					aircraftId: '',
+					operator_id: '',
+					aircraft_id: '',
 					rate: '',
-					startDate: '',
-					closeDate: '',
+					start_date: '',
+					close_date: '',
 					
 
 				
@@ -114,6 +117,10 @@
 					arrival_airport_id: '',
 				}
 				]
+				},
+
+				newJob: {
+					id:'',
 				}
 			}
 		},
@@ -146,6 +153,20 @@
 		},
 
 		methods: {
+
+			createJob() {
+
+				this.$http.post('http://api.fattendant.local/api/jobs/create', this.job)
+				.then(response => {
+					this.newJob.id = response.body;
+					alert('job added');
+					console.log(response)
+					this.$router.push({ name: 'ShowJob', params: {id: this.newJob.id } })
+				}, error => {
+					console.log(error)
+				
+				});
+			},
 		 	
 			
 			addRoute() {
