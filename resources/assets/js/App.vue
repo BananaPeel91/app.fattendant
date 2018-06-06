@@ -1,6 +1,6 @@
 <template>
 	<div class="row">
-	<div class="col-md-3" style="background-color: #194769; height:200vh; text-align:center; color:white; font-weight: bold;  padding:0px;">
+	<div class="col-md-3" style="background-color: #194769; height:500vh; text-align:center; color:white; font-weight: bold;  padding:0px;">
 
                     <div class="col">
 
@@ -102,6 +102,7 @@ h2, h2 a, h1 a{
 .nav-item.login{
     color:#F2855E;
 }
+
 
 
 </style>

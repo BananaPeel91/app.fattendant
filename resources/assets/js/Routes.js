@@ -6,6 +6,7 @@ import ShowAttendant from './components/ShowAttendant.vue';
 import ShowJob from './components/ShowJob.vue';
 import CreateJob from './components/CreateJob.vue';
 
+
 export const routes = [
 	{path: '/jobs', component: Jobs},
 	{path: '/jobs/view/:id', name: 'ShowJob', component: ShowJob},

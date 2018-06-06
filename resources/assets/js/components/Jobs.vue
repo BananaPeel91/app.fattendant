@@ -93,8 +93,8 @@
 
 			resetFilters(){
 
-				this.filters.aircraftId = 0;
-				this.filters.operatorId = 0;
+				this.filters.aircraftId = '';
+				this.filters.operatorId = '';
 				this.search();
 			}
 		},
