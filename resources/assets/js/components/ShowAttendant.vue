@@ -32,8 +32,7 @@
 			}
 		},
 
-		mounted() {
-
+		mounted() {	
 			
 				this.$http.get('http://api.fattendant.local/api/attendants/' +this.$route.params.id)
                 .then(response => {
@@ -42,9 +41,6 @@
                     console.log(response)
                 
                 });
-
-                
-                
 		}
 	}
 </script>

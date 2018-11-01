@@ -15,10 +15,7 @@
 			<h4 @click="showAircraft(attendant.id)">{{selectedAircraft == attendant.id ? "Hide" : "Show"}} {{ attendant.name }}'s aircraft experience:</h4>
 			<div>
 				<div v-if="selectedAircraft == attendant.id"  class="col" v-for="aircraft in attendant.aircrafts" >
-					
 					<p><b>Model :</b>{{ aircraft.model }}</p>
-					
-					
 				</div>
 			</div>
 			

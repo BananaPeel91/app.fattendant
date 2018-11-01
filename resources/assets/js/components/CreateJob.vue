@@ -97,19 +97,14 @@
 				operators: [],
 				aircrafts: [],
 				airports: [],
-
-
-				
+	
 				job:{
 					operator_id: '',
 					aircraft_id: '',
 					rate: '',
 					start_date: '',
 					close_date: '',
-					
-
-				
-				
+								
 				routes:[
 					{departure_date: '', 
 					departure_time: '',

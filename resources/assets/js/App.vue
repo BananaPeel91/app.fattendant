@@ -16,6 +16,12 @@
 
                     </li></router-link>
 
+                    <router-link :v-if="fullDetails.user_type == 2" style="width:100%; padding-top:10px; padding-bottom:10px;" to="/jobs/create"><li class="nav-item" >
+
+                        Create Job
+
+                    </li></router-link>
+
                     <router-link style="width:100%; padding-top:10px; padding-bottom:10px;" to="/operators"><li class="nav-item" >
 
                         Operators
@@ -30,28 +36,23 @@
 
                    
                     
-                    <a  style="width:100%; padding-top:10px; padding-bottom:10px; " href="#"><li  class="nav-item login">
 
-                        Login
+                    <router-link style="width:100%; padding-top:10px; padding-bottom:10px; " :to="'/' +  status"><li  class="nav-item login">
 
-                    </li></a>
-                    
-                    <a style="width:100%; padding-top:10px; padding-bottom:10px;" href="#"><li style="color:#blue;" class="nav-item">
+                        {{ status }}
+                
+                    </li></router-link>
+
+                       
+    
+                    <router-link style="width:100%; padding-top:10px; padding-bottom:10px;" to="/signup"><li style="color:#blue;" class="nav-item">
 
                         Register
 
-                    </li></a>
+                    </li></router-link>
 
                     </ul>
-                
-                
-
-                   
-
-                
-
                 </div>
-
                 <div class="col-md-9" style="background-color:white;">
                    <router-view></router-view>
 
@@ -63,6 +64,52 @@
 </template>
 
 <script>
+export default {
+
+    data() {
+        return {
+            user: [],
+            status: '',
+            fullDetails: [],
+        }
+    },
+
+    beforeCreate() {
+        axios.post('http://api.fattendant.local/api/auth/user', false, {
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+            }
+        })
+        .then(response => {
+            this.user = response.data;
+            }, error => {
+                this.user = []
+                console.log(error)
+        });
+    },
+
+    mounted() {
+        if (localStorage.getItem('fullDetails')) {
+            this.status = 'Logout';
+            this.fullDetails = JSON.parse(localStorage.getItem('fullDetails'))
+            console.log(this.fullDetails.user_type)
+            console.log(localStorage.getItem('fullDetails'))
+        } else {
+            this.status = 'Login';
+        }
+    },
+
+    updated() {
+        if (localStorage.getItem('fullDetails')) {
+            this.status = 'Logout';
+            this.fullDetails = localStorage.getItem('fullDetails')
+            console.log(localStorage.getItem('fullDetails'))
+        } else {
+            this.status = 'Login';
+        }
+    }
+
+}
 	
 </script>
 

@@ -123,6 +123,8 @@
                 }, error => {
                     console.log(error)
                 });
+
+                console.log(localStorage.getItem('permissions'))
         
         }
 	}

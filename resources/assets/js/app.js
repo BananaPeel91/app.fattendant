@@ -22,10 +22,7 @@ const router = new VueRouter({
   		return { x: 0, y: 0 }
 	}
 });
-
-
-
-
+		
 
 new Vue({
   el: '#app',
